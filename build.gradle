@@ -1,0 +1,123 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+
+version = '1.0.0'
+group = 'net.thesilkminer.mc' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'stencil-shenanigans'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+minecraft {
+    mappings channel: 'snapshot', version: '20200416-1.15.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                stencilshenanigans {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run_server')
+
+            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                stencilshenanigans {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'stencilshenanigans', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                stencilshenanigans {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+
+dependencies {
+    minecraft group: 'net.minecraftforge', name: 'forge', version: '1.15.2-31.1.0'
+
+    implementation name: 'Fermion-1.0.2'
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "Stencil Shenanigans",
+            "Specification-Vendor": "TheSilkMiner",
+            "Specification-Version": "1.0.0", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"TheSilkMiner",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+/*
+task signJar(type: SignJar, dependsOn: 'reobfJar') {
+    onlyIf {
+        project.hasProperty('keystore')
+    }
+    keyStore = project.findProperty('keystore')
+    alias = project.findProperty('keystoreAlias')
+    storePass = project.findProperty('keystorePass')
+    keyPass = project.findProperty('keyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+build.dependsOn signJar
+*/
+artifacts {
+    archives sourcesJar
+}
+
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+    type 'jar'
+    builtBy 'reobfJar'
+}
+

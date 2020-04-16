@@ -1,0 +1,36 @@
+modLoader="javafml"
+loaderVersion="[31.1,)"
+issueTrackerURL="https://github.com/TheSilkMiner/Stencil-Shenanigans"
+
+[[mods]]
+    modId="stencilshenanigans"
+    version="${file.jarVersion}"
+    displayName="Stencil Shenanigans"
+    displayURL=""
+    logoFile="stencil_shenanigans_logo.png"
+    credits="Forge, since without them being lazy this mod wouldn't exist; Funwayguy for the original patch"
+    authors="TheSilkMiner, Funwayguy"
+    description='''
+    A mod that enables stencil support for Minecraft.
+
+    NOTE: This mod doesn't do anything on its own and it purely exists so people can depend on it. The real work is done by the ASM transformer
+    '''
+
+[[dependencies.stencilshenanigans]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.stencilshenanigans]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.stencilshenanigans]]
+    modId="fermion"
+    mandatory=true
+    versionRange="[1.0.2,)"
+    ordering="NONE"
+    side="BOTH"
